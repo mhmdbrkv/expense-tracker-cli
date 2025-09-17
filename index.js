@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 const { Command } = require("commander");
-const { writeToFile, readFromFile, deleteFromFile } = require("./src/expenses");
+const {
+  writeToFile,
+  readFromFile,
+  deleteFromFile,
+  updateFile,
+} = require("./src/expenses");
 const program = new Command();
 
 // Add command
@@ -41,6 +46,29 @@ program
     console.log(`Expense deleted successfully`);
   });
 
+// Update command
+program
+  .command("update")
+  .description("Update an expense by ID")
+  .requiredOption("-i, --id <id>", "Expense ID")
+  .option("-d, --description <description>", "Expense description")
+  .option("-a --amount <amount>", "Expense amount")
+  .action(async (options) => {
+    const { id, description, amount } = options;
+
+    if (!description && !amount) {
+      console.log("Please provide either description or amount to update");
+      return;
+    }
+
+    const data = {};
+    if (description) data.description = description;
+    if (amount) data.amount = amount;
+
+    await updateFile(id, data);
+    console.log(`Expense updated successfully`);
+  });
+
 // Summary command
 program
   .command("summary")
@@ -66,8 +94,13 @@ program
     if (options.month) {
       let commandMonth = monthMap.get(+options.month);
       const filteredExpenses = expenses.filter((expense) => {
-        const expenseMonth = expense.date.split(" ")[1];
-        return expenseMonth === commandMonth;
+        if (
+          expense.date.split(" ")[3] === new Date().getFullYear().toString()
+        ) {
+          const expenseMonth = expense.date.split(" ")[1];
+          return expenseMonth === commandMonth;
+        }
+        return false;
       });
       totalAmount = filteredExpenses.reduce(
         (acc, expense) => acc + +expense.amount,

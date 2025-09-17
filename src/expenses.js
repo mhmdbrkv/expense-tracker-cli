@@ -59,4 +59,19 @@ const deleteFromFile = async (id) => {
   }
 };
 
-module.exports = { readFromFile, writeToFile, deleteFromFile };
+const updateFile = async (id, data) => {
+  try {
+    const expenses = await readFromFile();
+    const updatedExpenses = expenses.map((expense) => {
+      if (expense.id.toString() === id.toString()) {
+        return { ...expense, ...data };
+      }
+      return expense;
+    });
+    await fs.writeFile(filePath, JSON.stringify(updatedExpenses, null, 2));
+  } catch (error) {
+    console.log("error in updating from file", error);
+  }
+};
+
+module.exports = { readFromFile, writeToFile, deleteFromFile, updateFile };

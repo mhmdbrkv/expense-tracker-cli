@@ -2,14 +2,14 @@
   {
     "id": 1,
     "date": "Tue Sep 16 2025",
-    "description": "Food",
-    "amount": "20"
+    "description": "updated food",
+    "amount": "15"
   },
   {
     "id": 2,
     "date": "Tue Sep 16 2025",
-    "description": "Food",
-    "amount": "20"
+    "description": "updated food 2",
+    "amount": "50"
   },
   {
     "id": 3,
@@ -31,7 +31,7 @@
   },
   {
     "id": 6,
-    "date": "Tue Sep 16 2025",
+    "date": "Tue Sep 16 2027",
     "description": "Food",
     "amount": "20"
   }
