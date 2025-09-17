@@ -47,4 +47,16 @@ const readFromFile = async () => {
   }
 };
 
-module.exports = { readFromFile, writeToFile };
+const deleteFromFile = async (id) => {
+  try {
+    const expenses = await readFromFile();
+    const updatedExpenses = expenses.filter(
+      (expense) => expense.id.toString() !== id.toString()
+    );
+    await fs.writeFile(filePath, JSON.stringify(updatedExpenses, null, 2));
+  } catch (error) {
+    console.log("error in deleting from file", error);
+  }
+};
+
+module.exports = { readFromFile, writeToFile, deleteFromFile };

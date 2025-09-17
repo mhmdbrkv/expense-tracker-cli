@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const { Command } = require("commander");
-const { writeToFile, readFromFile } = require("./src/expenses");
+const { writeToFile, readFromFile, deleteFromFile } = require("./src/expenses");
 const program = new Command();
 
 // Add command
@@ -28,6 +28,17 @@ program
         `${expense.id}\t${expense.date}\t\t${expense.description}\t\t\t$${expense.amount}`
       )
     );
+  });
+
+// Delete command
+program
+  .command("delete")
+  .description("Delete an expense by ID")
+  .requiredOption("-i, --id <id>", "Expense ID")
+  .action(async (options) => {
+    const { id } = options;
+    await deleteFromFile(id);
+    console.log(`Expense with ID ${id} deleted successfully`);
   });
 
 program.parse();
