@@ -34,5 +34,26 @@
     "date": "Tue Sep 16 2027",
     "description": "Food",
     "amount": "20"
+  },
+  {
+    "id": 7,
+    "date": "Thu Sep 18 2025",
+    "description": "Pizza",
+    "amount": "120",
+    "category": "Food"
+  },
+  {
+    "id": 8,
+    "date": "Thu Sep 18 2025",
+    "description": "T-Shirt",
+    "amount": "300",
+    "category": "Clothes"
+  },
+  {
+    "id": 9,
+    "date": "Thu Sep 18 2025",
+    "description": "Pants",
+    "amount": "150",
+    "category": "Clothes"
   }
 ]

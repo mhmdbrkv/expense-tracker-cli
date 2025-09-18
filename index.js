@@ -13,10 +13,11 @@ program
   .command("add")
   .description("Add an expense with an amount and description")
   .requiredOption("-d, --description <description>", "Expense description")
-  .requiredOption("-a --amount <amount>", "Expense amount")
+  .requiredOption("-a, --amount <amount>", "Expense amount")
+  .requiredOption("-c, --category <category>", "Category name")
   .action(async (options) => {
-    const { description, amount } = options;
-    const result = await writeToFile({ description, amount });
+    const { description, amount, category } = options;
+    const result = await writeToFile({ description, amount, category });
 
     console.log(`Expense added successfully (ID: ${result.id})`);
   });
@@ -25,12 +26,19 @@ program
 program
   .command("list")
   .description("List all expenses")
-  .action(async () => {
-    const expenses = await readFromFile();
-    console.log(`ID\tDate\t\t\tDescription\t\tAmount`);
+  .option("-c, --category <category>", "Filter by category")
+  .action(async (options) => {
+    const { category } = options;
+    let expenses = await readFromFile();
+    if (category) {
+      expenses = expenses.filter((expense) => expense.category === category);
+    }
+    console.log(`ID\tDate\t\t\tDescription\t\tAmount\t\tCategory`);
     expenses.forEach((expense) =>
       console.log(
-        `${expense.id}\t${expense.date}\t\t${expense.description}\t\t\t$${expense.amount}`
+        `${expense.id}\t${expense.date}\t\t${expense.description}\t\t\t$${
+          expense.amount
+        }\t\t${expense.category ? expense.category : ""}`
       )
     );
   });
