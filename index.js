@@ -7,6 +7,8 @@ const {
   updateFile,
 } = require("./src/expenses");
 const { setbudget } = require("./src/budgets");
+const exportToCSV = require("./src/utils/exportCSV");
+
 const program = new Command();
 
 // Add command
@@ -131,6 +133,15 @@ program
   .action(async (options) => {
     const { month, amount } = options;
     await setbudget(month, amount);
+  });
+
+// export command
+program
+  .command("exportToCSV")
+  .description("Export expenses to a CSV file")
+  .action(async () => {
+    const expenses = await readFromFile();
+    await exportToCSV(expenses);
   });
 
 program.parse();

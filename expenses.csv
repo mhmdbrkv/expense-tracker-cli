@@ -1,0 +1,10 @@
+id,date,description,amount,category
+1,Tue Sep 16 2025,updated food,15,undefined
+2,Tue Sep 16 2025,updated food 2,50,undefined
+3,Tue Sep 16 2025,Food,20,undefined
+4,Tue Sep 16 2025,Food,20,undefined
+5,Tue Sep 16 2025,Food,20,undefined
+6,Tue Sep 16 2027,Food,20,undefined
+7,Thu Sep 18 2025,Pizza,120,Food
+8,Thu Sep 18 2025,Pants,150,Clothes
+9,Sun Sep 21 2025,Shirt,150,Clothes
