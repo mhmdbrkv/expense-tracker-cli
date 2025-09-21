@@ -1,20 +1,20 @@
 # Expense Tracker CLI
 
-A simple **Command-Line Expense Tracker** built with Node.js.  
-This project helps users track their expenses by adding, listing, summarizing, and managing them directly from the terminal.
+A **Command-Line Expense Tracker** built with Node.js.  
+This project helps users track their expenses by adding, listing, summarizing, budgeting, and exporting them directly from the terminal.
 
-Project idea from [roadmap.sh](https://roadmap.sh/projects/expense-tracker).  
-Repository: [mhmdbrkv/expense-tracker-cli](https://github.com/mhmdbrkv/expense-tracker-cli.git)
+Project idea from [roadmap.sh](https://roadmap.sh/projects/expense-tracker).
 
 ---
 
 ## Features
 
 - Add a new expense with description, amount, and category.
-- List all expenses in a structured format.
-- View a summary of total expenses.
-- Filter expenses by category or date.
+- List all expenses with filtering by category.
+- View a summary of total expenses (optionally filter by month).
+- Set a monthly budget and get a warning if exceeded.
 - Delete or update an expense.
+- Export expenses to a CSV file.
 - Data stored in a local JSON file for persistence.
 
 ---
@@ -49,7 +49,7 @@ Run the CLI with the following commands:
 ### Adding a new expense
 
 ```bash
-expense-cli add "Lunch" 50 Food
+expense-cli add -d "Lunch" -a 50 -c Food
 # Output: Expense added successfully (ID: 1)
 ```
 
@@ -57,7 +57,13 @@ expense-cli add "Lunch" 50 Food
 
 ```bash
 expense-cli list
-# Output: Table of all expenses with ID, Description, Amount, Category, Date
+# Output: Table of all expenses with ID, Date, Description, Amount, Category
+```
+
+Filter by category:
+
+```bash
+expense-cli list -c Food
 ```
 
 ### Viewing summary
@@ -67,33 +73,40 @@ expense-cli summary
 # Output: Total expenses: $XXX
 ```
 
-### Filtering expenses
+Filter summary by month:
 
 ```bash
-expense-cli list --category Food
-expense-cli list --date 2025-09-21
+expense-cli summary -m 9
+# Output: Summary of expenses for September
+```
+
+### Setting a budget
+
+```bash
+expense-cli budget -m 9 -a 500
+# Output: Budget for September set to $500
 ```
 
 ### Updating an expense
 
 ```bash
-expense-cli update 1 "Lunch with friends" 75 Food
+expense-cli update -i 1 -d "Lunch with friends" -a 75
 # Output: Expense updated successfully
 ```
 
 ### Deleting an expense
 
 ```bash
-expense-cli delete 1
+expense-cli delete -i 1
 # Output: Expense deleted successfully
 ```
 
----
+### Exporting to CSV
 
-## Project Reference
-
-This project idea comes from:  
-🔗 [roadmap.sh - Expense Tracker](https://roadmap.sh/projects/expense-tracker)
+```bash
+expense-cli exportToCSV
+# Output: Expenses exported successfully to expenses.csv
+```
 
 ---
 
