@@ -30,7 +30,7 @@ const setbudget = async (month, amount) => {
   }
 };
 
-const readBudgets = async () => {
+const getBudgets = async () => {
   try {
     if (await checkFileExists(filePath)) {
       const file = await fs.readFile(filePath, "utf-8");
@@ -60,7 +60,7 @@ const checkBudgetExceeds = async (expenses) => {
     );
 
     // get budget amount for current month
-    const budgets = await readBudgets();
+    const budgets = await getBudgets();
     const budgetAmount = budgets.find(
       (budget) => budget.month === currentMonth
     ).amount;

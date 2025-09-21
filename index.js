@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 const { Command } = require("commander");
 const {
-  writeToFile,
-  readFromFile,
-  deleteFromFile,
-  updateFile,
+  readFromExpensesFile,
+  writeToExpenseFile,
+  deleteFromExpensesFile,
+  updateExpensesFile,
+  getExpensesSummary,
 } = require("./src/expenses");
 const { setbudget } = require("./src/budgets");
 const exportToCSV = require("./src/utils/exportCSV");
@@ -20,9 +21,7 @@ program
   .requiredOption("-c, --category <category>", "Category name")
   .action(async (options) => {
     const { description, amount, category } = options;
-    const result = await writeToFile({ description, amount, category });
-
-    console.log(`Expense added successfully (ID: ${result.id})`);
+    await writeToExpenseFile({ description, amount, category });
   });
 
 // List command
@@ -32,10 +31,11 @@ program
   .option("-c, --category <category>", "Filter by category")
   .action(async (options) => {
     const { category } = options;
-    let expenses = await readFromFile();
-    if (category) {
+    let expenses = await readFromExpensesFile();
+
+    if (category)
       expenses = expenses.filter((expense) => expense.category === category);
-    }
+
     console.log(`ID\tDate\t\t\tDescription\t\tAmount\t\tCategory`);
     expenses.forEach((expense) =>
       console.log(
@@ -53,8 +53,7 @@ program
   .requiredOption("-i, --id <id>", "Expense ID")
   .action(async (options) => {
     const { id } = options;
-    await deleteFromFile(id);
-    console.log(`Expense deleted successfully`);
+    await deleteFromExpensesFile(id);
   });
 
 // Update command
@@ -76,8 +75,7 @@ program
     if (description) data.description = description;
     if (amount) data.amount = amount;
 
-    await updateFile(id, data);
-    console.log(`Expense updated successfully`);
+    await updateExpensesFile(id, data);
   });
 
 // Summary command
@@ -86,42 +84,9 @@ program
   .description("Display a summary of expenses")
   .option("-m, --month <month>", "Filter by month")
   .action(async (options) => {
-    const expenses = await readFromFile();
-    let totalAmount = 0;
-    let monthMap = new Map([
-      [1, "Jan"],
-      [2, "Feb"],
-      [3, "Mar"],
-      [4, "Apr"],
-      [5, "May"],
-      [6, "Jun"],
-      [7, "Jul"],
-      [8, "Aug"],
-      [9, "Sep"],
-      [10, "Oct"],
-      [11, "Nov"],
-      [12, "Dec"],
-    ]);
-    if (options.month) {
-      let commandMonth = monthMap.get(+options.month);
-      const filteredExpenses = expenses.filter((expense) => {
-        if (
-          expense.date.split(" ")[3] === new Date().getFullYear().toString()
-        ) {
-          const expenseMonth = expense.date.split(" ")[1];
-          return expenseMonth === commandMonth;
-        }
-        return false;
-      });
-      totalAmount = filteredExpenses.reduce(
-        (acc, expense) => acc + +expense.amount,
-        0
-      );
-      console.log(`Total Expenses for ${commandMonth}: $${totalAmount}`);
-    } else {
-      totalAmount = expenses.reduce((acc, expense) => acc + +expense.amount, 0);
-      console.log(`Total Expenses: $${totalAmount}`);
-    }
+    const { month } = options;
+    const expenses = await readFromExpensesFile();
+    await getExpensesSummary(expenses, month);
   });
 
 // Set budget command
@@ -140,7 +105,7 @@ program
   .command("exportToCSV")
   .description("Export expenses to a CSV file")
   .action(async () => {
-    const expenses = await readFromFile();
+    const expenses = await readFromExpensesFile();
     await exportToCSV(expenses);
   });
 

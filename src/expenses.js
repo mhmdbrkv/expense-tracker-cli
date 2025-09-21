@@ -4,7 +4,7 @@ const checkFileExists = require("./utils/checkFileExists");
 const { checkBudgetExceeds } = require("./budgets");
 const filePath = path.join(__dirname, "..", "expenses.json");
 
-const writeToFile = async (data) => {
+const writeToExpenseFile = async (data) => {
   try {
     let expenses = [];
 
@@ -23,13 +23,13 @@ const writeToFile = async (data) => {
     expenses.push(expense);
     await checkBudgetExceeds(expenses);
     await fs.writeFile(filePath, JSON.stringify(expenses, null, 2));
-    return expense;
+    console.log(`Expense added successfully (ID: ${expense.id})`);
   } catch (error) {
     console.log("error in writing file", error);
   }
 };
 
-const readFromFile = async () => {
+const readFromExpensesFile = async () => {
   try {
     if (await checkFileExists(filePath)) {
       const file = await fs.readFile(filePath, "utf-8");
@@ -42,21 +42,22 @@ const readFromFile = async () => {
   }
 };
 
-const deleteFromFile = async (id) => {
+const deleteFromExpensesFile = async (id) => {
   try {
-    const expenses = await readFromFile();
+    const expenses = await readFromExpensesFile();
     const updatedExpenses = expenses.filter(
       (expense) => expense.id.toString() !== id.toString()
     );
     await fs.writeFile(filePath, JSON.stringify(updatedExpenses, null, 2));
+    console.log(`Expense deleted successfully`);
   } catch (error) {
     console.log("error in deleting from file", error);
   }
 };
 
-const updateFile = async (id, data) => {
+const updateExpensesFile = async (id, data) => {
   try {
-    const expenses = await readFromFile();
+    const expenses = await readFromExpensesFile();
     const updatedExpenses = expenses.map((expense) => {
       if (expense.id.toString() === id.toString()) {
         return { ...expense, ...data };
@@ -64,9 +65,58 @@ const updateFile = async (id, data) => {
       return expense;
     });
     await fs.writeFile(filePath, JSON.stringify(updatedExpenses, null, 2));
+    console.log(`Expense updated successfully`);
   } catch (error) {
     console.log("error in updating from file", error);
   }
 };
 
-module.exports = { readFromFile, writeToFile, deleteFromFile, updateFile };
+const getExpensesSummary = async (expenses, month) => {
+  try {
+    let totalAmount = 0;
+    let monthMap = new Map([
+      [1, "Jan"],
+      [2, "Feb"],
+      [3, "Mar"],
+      [4, "Apr"],
+      [5, "May"],
+      [6, "Jun"],
+      [7, "Jul"],
+      [8, "Aug"],
+      [9, "Sep"],
+      [10, "Oct"],
+      [11, "Nov"],
+      [12, "Dec"],
+    ]);
+    if (month) {
+      let commandMonth = monthMap.get(+month);
+      const filteredExpenses = expenses.filter((expense) => {
+        if (
+          expense.date.split(" ")[3] === new Date().getFullYear().toString()
+        ) {
+          const expenseMonth = expense.date.split(" ")[1];
+          return expenseMonth === commandMonth;
+        }
+        return false;
+      });
+      totalAmount = filteredExpenses.reduce(
+        (acc, expense) => acc + +expense.amount,
+        0
+      );
+      console.log(`Total Expenses for ${commandMonth}: $${totalAmount}`);
+    } else {
+      totalAmount = expenses.reduce((acc, expense) => acc + +expense.amount, 0);
+      console.log(`Total Expenses: $${totalAmount}`);
+    }
+  } catch (error) {
+    console.log("error in getting summary", error);
+  }
+};
+
+module.exports = {
+  readFromExpensesFile,
+  writeToExpenseFile,
+  deleteFromExpensesFile,
+  updateExpensesFile,
+  getExpensesSummary,
+};
