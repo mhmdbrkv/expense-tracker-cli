@@ -74,28 +74,14 @@ const updateExpensesFile = async (id, data) => {
 const getExpensesSummary = async (expenses, month) => {
   try {
     let totalAmount = 0;
-    let monthMap = new Map([
-      [1, "Jan"],
-      [2, "Feb"],
-      [3, "Mar"],
-      [4, "Apr"],
-      [5, "May"],
-      [6, "Jun"],
-      [7, "Jul"],
-      [8, "Aug"],
-      [9, "Sep"],
-      [10, "Oct"],
-      [11, "Nov"],
-      [12, "Dec"],
-    ]);
+
     if (month) {
-      let commandMonth = monthMap.get(+month);
       const filteredExpenses = expenses.filter((expense) => {
         if (
           expense.date.split(" ")[3] === new Date().getFullYear().toString()
         ) {
           const expenseMonth = expense.date.split(" ")[1];
-          return expenseMonth === commandMonth;
+          return expenseMonth === month;
         }
         return false;
       });
@@ -103,7 +89,7 @@ const getExpensesSummary = async (expenses, month) => {
         (acc, expense) => acc + +expense.amount,
         0
       );
-      console.log(`Total Expenses for ${commandMonth}: $${totalAmount}`);
+      console.log(`Total Expenses for ${month}: $${totalAmount}`);
     } else {
       totalAmount = expenses.reduce((acc, expense) => acc + +expense.amount, 0);
       console.log(`Total Expenses: $${totalAmount}`);
@@ -113,10 +99,20 @@ const getExpensesSummary = async (expenses, month) => {
   }
 };
 
+const checkIdExists = async (id) => {
+  try {
+    const expenses = await readFromExpensesFile();
+    return expenses.some((expense) => +expense.id === +id);
+  } catch (error) {
+    console.log("error in checking id", error);
+  }
+};
+
 module.exports = {
   readFromExpensesFile,
   writeToExpenseFile,
   deleteFromExpensesFile,
   updateExpensesFile,
   getExpensesSummary,
+  checkIdExists,
 };

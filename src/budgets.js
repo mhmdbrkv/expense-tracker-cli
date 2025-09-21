@@ -3,7 +3,7 @@ const path = require("node:path");
 const checkFileExists = require("./utils/checkFileExists");
 const filePath = path.join(__dirname, "..", "budgets.json");
 
-const setbudget = async (month, amount) => {
+const setBudget = async (month, amount) => {
   try {
     let budgets = [];
 
@@ -78,4 +78,4 @@ const checkBudgetExceeds = async (expenses) => {
   }
 };
 
-module.exports = { setbudget, checkBudgetExceeds };
+module.exports = { setBudget, checkBudgetExceeds };
