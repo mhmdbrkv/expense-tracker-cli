@@ -1,15 +1,8 @@
 const fs = require("node:fs/promises");
 const path = require("node:path");
+const checkFileExists = require("./utils/checkFileExists");
+const { checkBudgetExceeds } = require("./budgets");
 const filePath = path.join(__dirname, "..", "expenses.json");
-
-const checkFileExists = async (path) => {
-  try {
-    await fs.access(path);
-    return true;
-  } catch (error) {
-    return false;
-  }
-};
 
 const writeToFile = async (data) => {
   try {
@@ -28,12 +21,14 @@ const writeToFile = async (data) => {
       ...data,
     };
     expenses.push(expense);
+    await checkBudgetExceeds(expenses);
     await fs.writeFile(filePath, JSON.stringify(expenses, null, 2));
     return expense;
   } catch (error) {
     console.log("error in writing file", error);
   }
 };
+
 const readFromFile = async () => {
   try {
     if (await checkFileExists(filePath)) {

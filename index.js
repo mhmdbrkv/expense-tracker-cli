@@ -6,6 +6,7 @@ const {
   deleteFromFile,
   updateFile,
 } = require("./src/expenses");
+const { setbudget } = require("./src/budgets");
 const program = new Command();
 
 // Add command
@@ -119,6 +120,17 @@ program
       totalAmount = expenses.reduce((acc, expense) => acc + +expense.amount, 0);
       console.log(`Total Expenses: $${totalAmount}`);
     }
+  });
+
+// Set budget command
+program
+  .command("budget")
+  .description("Set a budget for a month")
+  .requiredOption("-m, --month <month>", "Budget month")
+  .requiredOption("-a, --amount <amount>", "Budget amount")
+  .action(async (options) => {
+    const { month, amount } = options;
+    await setbudget(month, amount);
   });
 
 program.parse();

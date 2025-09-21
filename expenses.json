@@ -45,14 +45,14 @@
   {
     "id": 8,
     "date": "Thu Sep 18 2025",
-    "description": "T-Shirt",
-    "amount": "300",
+    "description": "Pants",
+    "amount": "150",
     "category": "Clothes"
   },
   {
     "id": 9,
-    "date": "Thu Sep 18 2025",
-    "description": "Pants",
+    "date": "Sun Sep 21 2025",
+    "description": "Shirt",
     "amount": "150",
     "category": "Clothes"
   }
